@@ -7,16 +7,114 @@
     <!-- Fuentes y estilos -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #1a1a1a;
+            --color-secondary: #d4af37;
+            --color-accent: #c90a02;
+            --color-light: #f8f8f8;
+            --color-dark: #222;
+            --color-gray: #6e6e6e;
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: var(--color-dark);
+            background-color: var(--color-light);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #c19b2e;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #000;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: var(--color-secondary);
+            margin: 15px auto 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Encabezado con botón de inicio -->
     <header>
         <div class="header-container">
-            <a href="{{ url_for('index') }}" class="btn-volver">
+            <column>
+                <a href="{{ url_for('index') }}" class="btn-volver">
                 <i class="fas fa-home"></i> Inicio
             </a>
-            <h1>V A L I A N T</h1>
+            </column>
+            <column>
+                <h1>V A L I A N T</h1>
+            </column>
+            <column>
+            </column>
         </div>
     </header>
     
@@ -27,9 +125,32 @@
     
     <!-- Pie de página -->
     <footer>
-        <p>© 2025 VALIANT barber team - Todos los derechos reservados</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">VALIANT</div>
+                <p>Barbería de calidad con los mejores profesionales y productos.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Dirección: Victoria 2486, Valparaíso, Chile</p>
+                <p><i class="fas fa-phone"></i> Teléfono: +56 9 xxxx xxxx</p>
+                <p><i class="fas fa-envelope"></i> Email: info@valiantbarber.com</p>
+            </div>
+            <div class="footer-section">
+                <h4>Síguenos</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 VALIANT barber team - Todos los derechos reservados</p>
+        </div>
     </footer>
     <script>
+        // Código JavaScript existente para el calendario
         document.addEventListener('DOMContentLoaded', function() {
             // Mostrar/ocultar calendario al hacer clic en el input
             const fechaInput = document.getElementById('fecha');
@@ -155,6 +276,6 @@
                 return `${year}-${month}-${day}`;
             }
         });
-        </script>
+    </script>
 </body>
 </html>
