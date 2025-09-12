@@ -16,64 +16,257 @@
             </div>
         {% endif %}
         
-        <form method="POST" class="reserva-form">
-            <div class="form-group">
-                <label for="fecha">Fecha:</label>
-                <input type="text" id="fecha" name="fecha" class="datepicker" required readonly>
-                <div id="calendar-container"></div>
+        <!-- Indicador de pasos -->
+        <div class="reserva-steps">
+            <div class="step active" data-step="1">
+                <span class="step-number">1</span>
+                <span class="step-label">Fecha y Hora</span>
             </div>
-            
-            <div class="form-group">
-                <label>Horarios Disponibles:</label>
-                <div class="horarios-grid">
-                    {% for hora, estado in peluquero.horarios[fecha_actual].items() %}
-                        <div class="hora-slot {{ estado }}">
-                            <input type="radio" 
-                                   name="hora" 
-                                   value="{{ hora }}" 
-                                   id="hora-{{ loop.index }}"
-                                   {% if estado != 'disponible' %}disabled{% endif %}
-                                   required>
-                            <label for="hora-{{ loop.index }}">
-                                {{ hora }} - <span class="estado">{{ estado|capitalize }}</span>
-                            </label>
+            <div class="step" data-step="2">
+                <span class="step-number">2</span>
+                <span class="step-label">Datos de Contacto</span>
+            </div>
+        </div>
+        
+        <form method="POST" class="reserva-form" id="reservaForm">
+            <!-- Paso 1: Fecha y Hora -->
+            <div class="form-step active" id="step1">
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input type="text" id="fecha" name="fecha" class="datepicker" required readonly placeholder="Selecciona una fecha">
+                    <div id="calendar-container"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Horarios Disponibles:</label>
+                    <div class="time-sections">
+                        <div class="time-section">
+                            <h4>Mañana</h4>
+                            <div class="horarios-grid">
+                                {% for hora, estado in peluquero.horarios[fecha_actual].items() %}
+                                    {% if hora in ['08:00', '09:00', '10:00', '11:00'] %}
+                                    <div class="hora-slot {{ estado }}">
+                                        <input type="radio" 
+                                               name="hora" 
+                                               value="{{ hora }}" 
+                                               id="hora-{{ loop.index }}"
+                                               {% if estado != 'disponible' %}disabled{% endif %}
+                                               required>
+                                        <label for="hora-{{ loop.index }}">
+                                            {{ hora }} - <span class="estado">{{ estado|capitalize }}</span>
+                                        </label>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
                         </div>
-                    {% endfor %}
+                        
+                        <div class="time-section">
+                            <h4>Tarde</h4>
+                            <div class="horarios-grid">
+                                {% for hora, estado in peluquero.horarios[fecha_actual].items() %}
+                                    {% if hora in ['12:00', '13:00', '14:00', '15:00', '16:00', '17:00'] %}
+                                    <div class="hora-slot {{ estado }}">
+                                        <input type="radio" 
+                                               name="hora" 
+                                               value="{{ hora }}" 
+                                               id="hora-{{ loop.index }}"
+                                               {% if estado != 'disponible' %}disabled{% endif %}
+                                               required>
+                                        <label for="hora-{{ loop.index }}">
+                                            {{ hora }} - <span class="estado">{{ estado|capitalize }}</span>
+                                        </label>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="servicio">Servicio:</label>
+                    <select name="servicio" id="servicio" required>
+                        <option value="">Seleccione un servicio</option>
+                        {% for servicio in peluquero.servicios %}
+                            <option value="{{ servicio }}">
+                                {{ servicio }} - ${{ peluquero.precios[servicio] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-navigation">
+                    <button type="button" class="btn-next">Siguiente</button>
                 </div>
             </div>
             
-            <div class="form-group">
-                <label for="servicio">Servicio:</label>
-                <select name="servicio" id="servicio" required>
-                    <option value="">Seleccione un servicio</option>
-                    {% for servicio in peluquero.servicios %}
-                        <option value="{{ servicio }}">
-                            {{ servicio }} - ${{ peluquero.precios[servicio] }}
-                        </option>
-                    {% endfor %}
-                </select>
+            <!-- Paso 2: Datos de Contacto -->
+            <div class="form-step" id="step2">
+                <h3><i class="fas fa-user-edit"></i> Tus Datos</h3>
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre *</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="apellido">Apellido *</label>
+                    <input type="text" id="apellido" name="apellido" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefono">Teléfono *</label>
+                    <input type="tel" id="telefono" name="telefono" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rut">RUT:</label>
+                    <input type="text" id="rut" name="rut">
+                </div>
+                
+                <div class="form-navigation">
+                    <button type="button" class="btn-prev">Anterior</button>
+                    <button type="submit" class="btn-confirmar">
+                        <i class="fas fa-check-circle"></i> Agendar
+                    </button>
+                </div>
             </div>
-            
-            <h3><i class="fas fa-user-edit"></i> Tus Datos</h3>
-            
-            <div class="form-group">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="apellido">Apellido:</label>
-                <input type="text" id="apellido" name="apellido" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="rut">RUT:</label>
-                <input type="text" id="rut" name="rut" required>
-            </div>
-            
-            <button type="submit" class="btn-confirmar">
-                <i class="fas fa-check-circle"></i> Confirmar Reserva
-            </button>
         </form>
+        
+        <!-- Resumen de la reserva (sidebar) -->
+        <div class="reserva-summary">
+            <h4>Resumen de tu reserva</h4>
+            <div class="summary-content">
+                <div class="summary-item">
+                    <strong>Servicio:</strong>
+                    <span id="summary-servicio">-</span>
+                </div>
+                <div class="summary-item">
+                    <strong>Precio:</strong>
+                    <span id="summary-precio">-</span>
+                </div>
+                <div class="summary-item">
+                    <strong>Fecha:</strong>
+                    <span id="summary-fecha">-</span>
+                </div>
+                <div class="summary-item">
+                    <strong>Hora:</strong>
+                    <span id="summary-hora">-</span>
+                </div>
+                <div class="summary-item">
+                    <strong>Barbero:</strong>
+                    <span>{{ peluquero.nombre }}</span>
+                </div>
+                <div class="summary-item">
+                    <strong>Lugar:</strong>
+                    <span>VALIANT Barbería</span>
+                </div>
+            </div>
+        </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navegación entre pasos
+            const steps = document.querySelectorAll('.form-step');
+            const stepIndicators = document.querySelectorAll('.reserva-steps .step');
+            const nextBtn = document.querySelector('.btn-next');
+            const prevBtn = document.querySelector('.btn-prev');
+            const form = document.getElementById('reservaForm');
+            
+            let currentStep = 1;
+            
+            // Actualizar resumen
+            function updateSummary() {
+                const servicio = document.getElementById('servicio');
+                const fecha = document.getElementById('fecha');
+                const horaSeleccionada = document.querySelector('input[name="hora"]:checked');
+                
+                if (servicio.value) {
+                    document.getElementById('summary-servicio').textContent = servicio.value;
+                    
+                    // Buscar el precio del servicio seleccionado
+                    const servicios = {{ peluquero.servicios|tojson }};
+                    const precios = {{ peluquero.precios|tojson }};
+                    const index = servicios.indexOf(servicio.value);
+                    if (index !== -1) {
+                        const precio = precios[servicio.value];
+                        document.getElementById('summary-precio').textContent = '$' + precio;
+                    }
+                }
+                
+                if (fecha.value) {
+                    document.getElementById('summary-fecha').textContent = formatDisplayDate(fecha.value);
+                }
+                
+                if (horaSeleccionada) {
+                    document.getElementById('summary-hora').textContent = horaSeleccionada.value;
+                }
+            }
+            
+            function formatDisplayDate(dateString) {
+                const [year, month, day] = dateString.split('-');
+                const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                               'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                return `${day} de ${months[parseInt(month) - 1]} de ${year}`;
+            }
+            
+            // Event listeners para actualizar el resumen
+            document.getElementById('servicio').addEventListener('change', updateSummary);
+            document.getElementById('fecha').addEventListener('change', updateSummary);
+            document.querySelectorAll('input[name="hora"]').forEach(radio => {
+                radio.addEventListener('change', updateSummary);
+            });
+            
+            // Navegación siguiente
+            nextBtn.addEventListener('click', function() {
+                // Validar campos del paso 1
+                const fecha = document.getElementById('fecha');
+                const hora = document.querySelector('input[name="hora"]:checked');
+                const servicio = document.getElementById('servicio');
+                
+                if (!fecha.value) {
+                    alert('Por favor selecciona una fecha');
+                    return;
+                }
+                
+                if (!hora) {
+                    alert('Por favor selecciona un horario');
+                    return;
+                }
+                
+                if (!servicio.value) {
+                    alert('Por favor selecciona un servicio');
+                    return;
+                }
+                
+                // Avanzar al siguiente paso
+                steps[0].classList.remove('active');
+                steps[1].classList.add('active');
+                stepIndicators[0].classList.remove('active');
+                stepIndicators[1].classList.add('active');
+                currentStep = 2;
+                
+                updateSummary();
+            });
+            
+            // Navegación anterior
+            prevBtn.addEventListener('click', function() {
+                steps[1].classList.remove('active');
+                steps[0].classList.add('active');
+                stepIndicators[1].classList.remove('active');
+                stepIndicators[0].classList.add('active');
+                currentStep = 1;
+            });
+            
+            // Inicializar el resumen
+            updateSummary();
+        });
+    </script>
 {% endblock %}

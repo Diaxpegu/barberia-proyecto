@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="confirmacion-container">
+        <div class="confirmacion-header">
+            <i class="fas fa-check-circle"></i>
+            <h2>¡Reserva Confirmada!</h2>
+            <p>Tu reserva ha sido agendada exitosamente</p>
+        </div>
+        
+        <div class="confirmacion-detalles">
+            <h3>Detalles de tu reserva</h3>
+            
+            <div class="detalle-item">
+                <strong>Número de reserva:</strong>
+                <span>#{{ reserva.id }}</span>
+            </div>
+            
+            <div class="detalle-item">
+                <strong>Servicio:</strong>
+                <span>{{ reserva.servicio }}</span>
+            </div>
+            
+            <div class="detalle-item">
+                <strong>Barbero:</strong>
+                <span>{{ peluquero.nombre }}</span>
+            </div>
+            
+            <div class="detalle-item">
+                <strong>Fecha:</strong>
+                <span>{{ reserva.fecha }}</span>
+            </div>
+            
+            <div class="detalle-item">
+                <strong>Hora:</strong>
+                <span>{{ reserva.hora }}</span>
+            </div>
+            
+            <div class="detalle-item">
+                <strong>Cliente:</strong>
+                <span>{{ cliente.nombre }} {{ cliente.apellido }}</span>
+            </div>
+            
+            <div class="detalle-item">
+                <strong>Email:</strong>
+                <span>{{ cliente.email }}</span>
+            </div>
+            
+            <div class="detalle-item">
+                <strong>Teléfono:</strong>
+                <span>{{ cliente.telefono }}</span>
+            </div>
+            
+            {% if cliente.rut %}
+            <div class="detalle-item">
+                <strong>RUT:</strong>
+                <span>{{ cliente.rut }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="confirmacion-acciones">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="fas fa-home"></i> Volver al Inicio
+            </a>
+            <a href="{{ url_for('panel_peluquero', peluquero_id=peluquero.id) }}" class="btn btn-secondary">
+                <i class="fas fa-calendar"></i> Ver Mis Reservas
+            </a>
+        </div>
+        
+        <div class="confirmacion-info">
+            <p><i class="fas fa-info-circle"></i> Recibirás un correo de confirmación con los detalles de tu reserva.</p>
+            <p><i class="fas fa-clock"></i> Por favor llega 5 minutos antes de tu hora agendada.</p>
+        </div>
+    </section>
+
+    <style>
+        .confirmacion-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .confirmacion-header {
+            margin-bottom: 2rem;
+        }
+        
+        .confirmacion-header i {
+            font-size: 4rem;
+            color: var(--color-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .confirmacion-header h2 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .confirmacion-detalles {
+            text-align: left;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .confirmacion-detalles h3 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .detalle-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detalle-item:last-child {
+            border-bottom: none;
+        }
+        
+        .confirmacion-acciones {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .confirmacion-info {
+            background: #e8f5e8;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: left;
+        }
+        
+        .confirmacion-info i {
+            color: var(--color-secondary);
+            margin-right: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .confirmacion-acciones {
+                flex-direction: column;
+            }
+            
+            .detalle-item {
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+        }
+    </style>
+{% endblock %}
