@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="peluqueros-container">
+        <!-- Logo e Instagram principal -->
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='valiant.jpg') }}" alt="Valiant Barber's Team" class="logo-img">
+            <p class="instagram-main">
+                <i class="fab fa-instagram"></i> 
+                <a href="https://instagram.com/valiant_barber" target="_blank">
+                    @valiant_barber
+                </a>
+            </p>
+        </div>
+        
+        <!-- Sección de peluqueros -->
+        <h2>Nuestros Profesionales</h2>
+        <h3>Elige tu peluquero y reserva tu cita</h3>
+        
+        <div class="peluqueros-grid">
+            {% for peluquero in peluqueros %}
+                <div class="peluquero-card">
+                    <h3>{{ peluquero.nombre }}</h3>
+                    <p class="instagram-link">
+                        <i class="fab fa-instagram"></i> 
+                        <a href="https://instagram.com/{{ peluquero.instagram|replace('@','') }}" target="_blank">
+                            {{ peluquero.instagram }}
+                        </a>
+                    </p>
+                    <div class="servicios">
+                        <h4>Servicios:</h4>
+                        <ul>
+                            {% for servicio in peluquero.servicios %}
+                                <li>{{ servicio }} - ${{ peluquero.precios[servicio] }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('reserva', peluquero_id=peluquero.id) }}" class="btn-reservar">
+                        <i class="fas fa-calendar-check"></i> Reservar
+                    </a>
+                    <a href="{{ url_for('panel_peluquero', peluquero_id=peluquero.id) }}" class="btn-panel">
+                        <i class="fas fa-user-cog"></i> Panel
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Sección de productos (nueva) -->
+        <div class="productos-section">
+            <h2>Nuestros Productos</h2>
+            <h3>---</h3>
+            
+            <div class="productos-grid">
+                <div class="producto-card">
+                    <img src="{{ url_for('static', filename='producto1.jpg') }}" alt="Palva texturizador" class="producto-img">
+                </div>
+                
+                <div class="producto-card">
+                    <img src="{{ url_for('static', filename='producto2.jpg') }}" alt="Buffel ceras" class="producto-img">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

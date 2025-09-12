@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="panel-container">
+        <!-- Título y subtítulo -->
+        <h2>Panel de {{ peluquero.nombre }}</h2>
+        <p class="subtitulo">Reservas confirmadas</p>
+        
+        <!-- Listado de reservas -->
+        <div class="reservas-list">
+            {% if reservas %}
+                <!-- Estilo de lista de reservas -->
+                <div class="reserva-item-header">
+                    <span class="reserva-field"><strong>Fecha</strong></span>
+                    <span class="reserva-field"><strong>Hora</strong></span>
+                    <span class="reserva-field"><strong>Cliente</strong></span>
+                    <span class="reserva-field"><strong>Servicio</strong></span>
+                    <span class="reserva-field"><strong>Visitas</strong></span>
+                </div>
+                
+                {% for reserva in reservas %}
+                    <div class="reserva-item">
+                        <span class="reserva-field">{{ reserva.fecha }}</span>
+                        <span class="reserva-field">{{ reserva.hora }}</span>
+                        <span class="reserva-field">
+                            {% if reserva.cliente_nombre %}
+                                {{ reserva.cliente_nombre }}
+                            {% else %}
+                                Cliente no registrado
+                            {% endif %}
+                        </span>
+                        <span class="reserva-field">{{ reserva.servicio }}</span>
+                        <span class="reserva-field">{{ reserva.visitas if reserva.visitas else 1 }}</span>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Mensaje cuando no hay reservas -->
+                <p class="sin-reservas">
+                    <i class="far fa-calendar-times"></i> No hay reservas registradas aún
+                </p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

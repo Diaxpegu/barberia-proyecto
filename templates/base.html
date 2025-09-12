@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALIANT Barbería</title>
+    <!-- Fuentes y estilos -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Encabezado con botón de inicio -->
+    <header>
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="btn-volver">
+                <i class="fas fa-home"></i> Inicio
+            </a>
+            <h1>V A L I A N T</h1>
+        </div>
+    </header>
+    
+    <!-- Contenido principal -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Pie de página -->
+    <footer>
+        <p>© 2025 VALIANT barber team - Todos los derechos reservados</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar/ocultar calendario al hacer clic en el input
+            const fechaInput = document.getElementById('fecha');
+            const calendarContainer = document.getElementById('calendar-container');
+            
+            if (fechaInput) {
+                fechaInput.addEventListener('click', function() {
+                    calendarContainer.style.display = calendarContainer.style.display === 'block' ? 'none' : 'block';
+                    if (calendarContainer.style.display === 'block' && !calendarContainer.innerHTML) {
+                        renderCalendar(new Date(2025, 3, 1)); // Abril 2025 (los meses van de 0-11)
+                    }
+                });
+                
+                // Cerrar calendario al hacer clic fuera
+                document.addEventListener('click', function(e) {
+                    if (!fechaInput.contains(e.target) && !calendarContainer.contains(e.target)) {
+                        calendarContainer.style.display = 'none';
+                    }
+                });
+            }
+            
+            function renderCalendar(date) {
+                const year = date.getFullYear();
+                const month = date.getMonth();
+                
+                // Obtener primer día del mes y último día del mes
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                
+                // Obtener día de la semana del primer día (0=Domingo, 1=Lunes, etc.)
+                const firstDayOfWeek = firstDay.getDay();
+                
+                // Número de días en el mes
+                const daysInMonth = lastDay.getDate();
+                
+                // Generar calendario
+                let calendarHTML = `
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <div class="calendar-title">${getMonthName(month)} ${year}</div>
+                            <div class="calendar-nav">
+                                <button class="prev-month" type="button">&lt;</button>
+                                <button class="next-month" type="button">&gt;</button>
+                            </div>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <div>Lun</div>
+                            <div>Mar</div>
+                            <div>Mié</div>
+                            <div>Jue</div>
+                            <div>Vie</div>
+                            <div class="weekend">Sáb</div>
+                            <div class="weekend">Dom</div>
+                        </div>
+                        <div class="calendar-days">
+                `;
+                
+                // Espacios vacíos para días del mes anterior
+                for (let i = 0; i < (firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1); i++) {
+                    calendarHTML += `<div class="calendar-day unavailable"></div>`;
+                }
+                
+                // Días del mes
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const currentDate = new Date(year, month, day);
+                    const dayOfWeek = currentDate.getDay();
+                    
+                    // Solo permitir seleccionar de Lunes a Viernes (1-5)
+                    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                        const dateStr = formatDate(currentDate);
+                        calendarHTML += `
+                            <div class="calendar-day available" data-date="${dateStr}">${day}</div>
+                        `;
+                    } else {
+                        calendarHTML += `
+                            <div class="calendar-day weekend">${day}</div>
+                        `;
+                    }
+                }
+                
+                calendarHTML += `</div></div>`;
+                calendarContainer.innerHTML = calendarHTML;
+                
+                // Event listeners para navegación
+                document.querySelector('.prev-month')?.addEventListener('click', function() {
+                    renderCalendar(new Date(year, month - 1, 1));
+                });
+                
+                document.querySelector('.next-month')?.addEventListener('click', function() {
+                    renderCalendar(new Date(year, month + 1, 1));
+                });
+                
+                // Event listeners para selección de día
+                document.querySelectorAll('.calendar-day.available').forEach(day => {
+                    day.addEventListener('click', function() {
+                        // Remover selección anterior
+                        document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                            el.classList.remove('selected');
+                        });
+                        
+                        // Marcar como seleccionado
+                        this.classList.add('selected');
+                        
+                        const selectedDate = this.getAttribute('data-date');
+                        fechaInput.value = selectedDate;
+                        calendarContainer.style.display = 'none';
+                    });
+                });
+            }
+            
+            function getMonthName(month) {
+                const months = [
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                ];
+                return months[month];
+            }
+            
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+        });
+        </script>
+</body>
+</html>
